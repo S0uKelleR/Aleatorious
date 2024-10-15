@@ -1,0 +1,82 @@
+#!/bin/bash
+
+echo "============================="
+echo "=====SCRIPT_DE_REDE:KLR======"
+echo "============================="
+sleep 0.5
+clear
+
+# opções para o usuário
+
+echo "ESTE SCRIPT DE TEM ALGUMAS OPÇÕES PARA VOCÊ"
+echo "1 = ACESSAR A INTERFACE DE REDE E SEUS ENDEREÇOS IP"
+echo "2 = VERIFICAR ALGUM HOST EXTERNO"
+echo "3 = REINICIAR O SERVIDOR DE REDE"
+echo "4 = VERIFICAR TODA A INTERFACE DE REDE"
+echo "5 = FECHAR O PROGRAMA"
+read valor
+
+# Mostra o endereço IP na interface de rede
+
+case $valor in
+1)
+        ip -br addr show
+;;
+
+# Solicita ao usuário qual host ele deseja realizar um teste de ping
+
+2)
+        echo "QUAL HOST VOCÊ DESEJA ACESSAR?"
+        read nomehost
+
+        ping -c 4 $nomehost
+        clear
+        if [ $? -eq 0 ]; then
+        echo "Verificado conexão do host $nomehost com sucesso!"
+        else
+        echo "Falha ao conectar com o host $nomehost"
+fi
+;;
+
+# Reinicia o servidor de rede
+
+3)
+        echo "REINICIANDO O SERVIDOR DE REDE..."
+        systemctl restart networking
+        sleep 0.4
+        clear
+        if [ $? -eq 0 ]; then
+        echo "SERVIÇO DE REDE REINICIADO COM SUCESSO!"
+        else
+        echo "FALHA AO REINICIAR O SERVIÇO DE REDE"
+fi
+;;
+
+# Vai mostrar toda a interface de rede (IP, Máscara, SubRede e Gateway)
+4)
+ip -4 addr show | awk '/inet/ {print "Endereço IP:", $2} /inet/ {print "Máscara de Su>
+
+gateway=$(ip route show | awk '/default via/ {print $3}')
+echo "Gateway: $gateway"
+
+;;
+
+# Fecha o programa
+
+5)
+        echo "FECHANDO O PROGRAMA..."
+        sleep  1
+        clear
+        exit
+;;
+
+# Caso o usuário não selecione uma opção correta
+
+*)
+        echo "OPÇÃO INVÁLIDA"
+        echo "CLIQUE QUALQUE ENTER REABRIR O PROGRAMA"
+        sleep 1
+        read
+        script3
+;;
+esac
